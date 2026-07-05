@@ -1,0 +1,86 @@
+local UIS = game:GetService("UserInputService")
+local CoreGui = game:GetService("CoreGui")
+
+if CoreGui:FindFirstChild("FlowBrHub") then CoreGui:FindFirstChild("FlowBrHub"):Destroy() end
+
+local Screen = Instance.new("ScreenGui", CoreGui)
+Screen.Name = "FlowBrHub"
+
+-- Frame Principal (Tamanho popup original compacto: 240x130)
+local Hub = Instance.new("Frame", Screen)
+Hub.Size = UDim2.new(0, 240, 0, 130)
+Hub.Position = UDim2.new(0.5, -120, 0.5, -65)
+Hub.BackgroundColor3 = Color3.fromRGB(10, 10, 10)
+Hub.BackgroundTransparency = 0.2
+Hub.Active = true
+Hub.ClipsDescendants = true
+Instance.new("UICorner", Hub).CornerRadius = UDim.new(0, 10)
+
+local Stroke = Instance.new("UIStroke", Hub)
+Stroke.Thickness = 1.5
+Stroke.Color = Color3.fromRGB(255, 255, 255)
+
+-- Header
+local Title = Instance.new("TextLabel", Hub)
+Title.Size = UDim2.new(1, -30, 0, 25)
+Title.BackgroundTransparency = 1
+Title.Text = "  👻 FLOWBR HUB"
+Title.TextColor3 = Color3.fromRGB(255, 255, 255)
+Title.Font = Enum.Font.GothamBold
+Title.TextXAlignment = Enum.TextXAlignment.Left
+Title.TextSize = 11
+
+-- Botão Fechar
+local Close = Instance.new("TextButton", Hub)
+Close.Size = UDim2.new(0, 20, 0, 20)
+Close.Position = UDim2.new(1, -25, 0, 3)
+Close.BackgroundTransparency = 1
+Close.Text = "–"
+Close.TextColor3 = Color3.fromRGB(255, 255, 255)
+Close.MouseButton1Click:Connect(function() Screen:Destroy() end)
+
+-- Container dos Botões
+local MainContainer = Instance.new("Frame", Hub)
+MainContainer.Size = UDim2.new(1, -10, 0, 95)
+MainContainer.Position = UDim2.new(0, 5, 0, 25)
+MainContainer.BackgroundTransparency = 1
+
+local List = Instance.new("UIListLayout", MainContainer)
+List.Padding = UDim.new(0, 4)
+
+-- Função para botões
+local function CreateBtn(text, url)
+    local btn = Instance.new("TextButton", MainContainer)
+    btn.Size = UDim2.new(1, 0, 0, 25)
+    btn.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
+    btn.BackgroundTransparency = 0.5
+    btn.Text = text
+    btn.TextColor3 = Color3.fromRGB(255, 255, 255)
+    btn.Font = Enum.Font.GothamSemibold
+    btn.TextSize = 11
+    Instance.new("UICorner", btn).CornerRadius = UDim.new(0, 5)
+    
+    btn.MouseButton1Click:Connect(function()
+        loadstring(game:HttpGet(url))()
+        Screen:Destroy()
+    end)
+end
+
+-- Botões e o "By flowwk7" dentro da lista para ficar organizado
+CreateBtn("Flowhub Duels", "https://raw.githubusercontent.com/Kauativor/flow-br/refs/heads/main/flowhubr.lua")
+CreateBtn("Flow Duels + Flash TP", "https://raw.githubusercontent.com/Kauativor/Dualflow/refs/heads/main/Dualflow.lua")
+CreateBtn("Flash TP", "https://raw.githubusercontent.com/Kauativor/Flow-flash/refs/heads/main/flashflow.lua")
+
+local Footer = Instance.new("TextLabel", MainContainer)
+Footer.Size = UDim2.new(1, 0, 0, 15)
+Footer.BackgroundTransparency = 1
+Footer.Text = "By flowwk7"
+Footer.TextColor3 = Color3.fromRGB(255, 255, 255)
+Footer.Font = Enum.Font.Gotham
+Footer.TextSize = 9
+
+-- Drag (Arrastar)
+local dragging, dragStart, startPos
+Hub.InputBegan:Connect(function(i) if i.UserInputType == Enum.UserInputType.MouseButton1 or i.UserInputType == Enum.UserInputType.Touch then dragging = true; dragStart = i.Position; startPos = Hub.Position end end)
+UIS.InputChanged:Connect(function(i) if dragging and (i.UserInputType == Enum.UserInputType.MouseMovement or i.UserInputType == Enum.UserInputType.Touch) then Hub.Position = UDim2.new(startPos.X.Scale, startPos.X.Offset + (i.Position.X - dragStart.X), startPos.Y.Scale, startPos.Y.Offset + (i.Position.Y - dragStart.Y)) end end)
+UIS.InputEnded:Connect(function(i) if i.UserInputType == Enum.UserInputType.MouseButton1 or i.UserInputType == Enum.UserInputType.Touch then dragging = false end end)
